@@ -1,5 +1,8 @@
 {
-  "kind": "idle",
-  "version": "2.3.0",
-  "signature": "LwLX5IV6OsFeE3W5OMG8Jf9XBgx8WpmncmkcP42ExN9R/BTMjby6R56fH1pCO1LVjYRj0o0pppJg5yXmclAJDA=="
+  "version": "2.3.1",
+  "url": "https://raw.githubusercontent.com/lolloolminecraft/erzhanpc/main/releases/2.3.1.zip",
+  "sha256": "d8ddbfbf743f04639b6c828a54e07d5abf15fc38e142ecadd950a09566741eda",
+  "signature": "PP+TMe3EHsBRp2fPQk8NI9EK94YoUsHGg+JJE0kHgaTpHvcMgtWUzHeM/ZBl1fygU0XLYAQWBw6lG9L5P+0QAA==",
+  "kind": "patch",
+  "base_version": "2.3.0"
 }
