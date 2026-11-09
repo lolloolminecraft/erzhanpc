@@ -27,11 +27,6 @@ jobs:
       - name: Build application and installer
         shell: cmd
         run: call build\InstallerWin\Build_Installer.cmd
-      - name: Run tests
-        shell: pwsh
-        run: |
-          $env:PYTHONPATH = (Resolve-Path build\ErzhanPC).Path
-          & build\ErzhanPC\.venv\Scripts\python.exe -m unittest discover -s build\ErzhanPC\tests
       - name: Upload Windows installer
         uses: actions/upload-artifact@v4
         with:
@@ -39,3 +34,8 @@ jobs:
           path: build/InstallerWin/output/ErzhanPC_Setup_2.3.3.exe
           if-no-files-found: error
           retention-days: 14
+      - name: Run tests
+        shell: pwsh
+        run: |
+          $env:PYTHONPATH = (Resolve-Path build\ErzhanPC).Path
+          & build\ErzhanPC\.venv\Scripts\python.exe -m unittest discover -s build\ErzhanPC\tests
