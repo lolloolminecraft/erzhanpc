@@ -1,0 +1,41 @@
+name: Build Erzhan PC Windows Installer
+
+on:
+  push:
+    branches:
+      - build/erzhanpc-2.3.3
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  installer:
+    runs-on: windows-2022
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup --yes --no-progress
+      - name: Extract source bundle
+        shell: pwsh
+        run: Expand-Archive -LiteralPath ErzhanPC_2.3.3_Inno_Source.zip -DestinationPath build -Force
+      - name: Build application and installer
+        shell: cmd
+        run: call build\InstallerWin\Build_Installer.cmd
+      - name: Run tests
+        shell: pwsh
+        run: |
+          $env:PYTHONPATH = (Resolve-Path build\ErzhanPC).Path
+          & build\ErzhanPC\.venv\Scripts\python.exe -m unittest discover -s build\ErzhanPC\tests
+      - name: Upload Windows installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: ErzhanPC-Setup-2.3.3-Windows
+          path: build/InstallerWin/output/ErzhanPC_Setup_2.3.3.exe
+          if-no-files-found: error
+          retention-days: 14
