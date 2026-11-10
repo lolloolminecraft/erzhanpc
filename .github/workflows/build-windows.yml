@@ -3,7 +3,7 @@ name: Build Erzhan PC Windows Installer
 on:
   push:
     branches:
-      - build/erzhanpc-2.3.3
+      - build/erzhanpc-2.3.4
   workflow_dispatch:
 
 permissions:
@@ -23,15 +23,23 @@ jobs:
         run: choco install innosetup --yes --no-progress
       - name: Extract source bundle
         shell: pwsh
-        run: Expand-Archive -LiteralPath ErzhanPC_2.3.3_Inno_Source.zip -DestinationPath build -Force
+        run: Expand-Archive -LiteralPath ErzhanPC_2.3.4_Inno_Source.zip -DestinationPath build -Force
       - name: Build application and installer
         shell: cmd
         run: call build\InstallerWin\Build_Installer.cmd
+      - name: Verify tunnel client header support
+        shell: pwsh
+        run: |
+          $client = 'build\ErzhanPC\dist\ErzhanPC\tunnel-client.exe'
+          $helpText = & $client run --help 2>&1 | Out-String
+          if ($LASTEXITCODE -ne 0 -or $helpText -notmatch 'mcp.extra-headers' -or $helpText -notmatch 'mcp.discovery-extra-headers') {
+            throw 'The bundled tunnel client does not advertise required MCP header flags.'
+          }
       - name: Upload Windows installer
         uses: actions/upload-artifact@v4
         with:
-          name: ErzhanPC-Setup-2.3.3-Windows
-          path: build/InstallerWin/output/ErzhanPC_Setup_2.3.3.exe
+          name: ErzhanPC-Setup-2.3.4-Windows
+          path: build/InstallerWin/output/ErzhanPC_Setup_2.3.4.exe
           if-no-files-found: error
           retention-days: 14
       - name: Run tests
